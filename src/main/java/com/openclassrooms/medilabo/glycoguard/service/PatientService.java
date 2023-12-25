@@ -1,0 +1,12 @@
+package com.openclassrooms.medilabo.glycoguard.service;
+
+import java.util.List;
+
+import com.openclassrooms.medilabo.glycoguard.business.Patient;
+
+public interface PatientService {
+	List<Patient> retrievePatients();
+	Patient addPatient(Patient newPatient);
+	Patient retrievePatient(Long id);
+	Patient updatePatient(Long id, Patient updatedPatient);
+}
