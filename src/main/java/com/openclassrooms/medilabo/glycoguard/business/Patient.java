@@ -42,7 +42,6 @@ public class Patient {
 	@NotNull
 	private Gender gender;
 	
-	@Column(nullable = true)
 	@ManyToOne
 	@JsonManagedReference
 	private Address residence;
@@ -54,11 +53,12 @@ public class Patient {
 		this.created = LocalDateTime.now();
 	}
 	
-	public Patient(String forename, String name, LocalDate dob) {
+	public Patient(String forename, String name, LocalDate dob, Gender gender) {
 		this();
 		
 		this.forename = forename;
 		this.name = name;
 		this.dob = dob;
+		this.gender = gender;
 	}
 }

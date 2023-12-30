@@ -3,6 +3,7 @@ package com.openclassrooms.medilabo.glycoguard.service.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.medilabo.glycoguard.business.Patient;
@@ -19,8 +20,8 @@ public class PatientServiceImpl implements PatientService {
 	private final PatientDao patientDao;
 	
 	@Override
-	public List<Patient> retrievePatients() {
-		return patientDao.findAll();
+	public List<Patient> retrievePatients(Sort sort) {
+		return patientDao.findAll(sort);
 	}
 
 	@Override
@@ -51,6 +52,11 @@ public class PatientServiceImpl implements PatientService {
 		found.setPhone(updatedPatient.getPhone());
 		
 		return patientDao.save(found);
+	}
+
+	@Override
+	public void removePatient(Long id) {
+		patientDao.deleteById(id);
 	}
 	
 }
