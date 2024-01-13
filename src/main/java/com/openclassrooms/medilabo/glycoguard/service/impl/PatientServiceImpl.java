@@ -1,9 +1,9 @@
 package com.openclassrooms.medilabo.glycoguard.service.impl;
 
 import java.text.MessageFormat;
-import java.util.List;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.medilabo.glycoguard.business.Patient;
@@ -20,8 +20,8 @@ public class PatientServiceImpl implements PatientService {
 	private final PatientDao patientDao;
 	
 	@Override
-	public List<Patient> retrievePatients(Sort sort) {
-		return patientDao.findAll(sort);
+	public Page<Patient> retrievePatients(Pageable withPage) {
+		return patientDao.findAll(withPage);
 	}
 
 	@Override
