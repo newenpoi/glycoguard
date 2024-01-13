@@ -1,7 +1,8 @@
 package com.openclassrooms.medilabo.glycoguard.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.medilabo.glycoguard.business.Patient;
+import com.openclassrooms.medilabo.glycoguard.configuration.ApplicationPropertiesConfiguration;
 import com.openclassrooms.medilabo.glycoguard.service.PatientService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,34 +27,39 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PatientController {
 	
+	private final ApplicationPropertiesConfiguration appProperties;
 	private final PatientService patientService;
 	
 	@Operation(description = "Récupère la liste des patients.")
 	@GetMapping("/patients")
-	public ResponseEntity<List<Patient>> getPatients(@RequestParam(name = "sort", defaultValue = "name") String sort) {
-		List<Patient> patients = patientService.retrievePatients(Sort.by(sort));
+	public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "page", defaultValue = "0") int numPage, @RequestParam(name = "sort", defaultValue = "name") String sort) {
+		// Produit un objet de demande de page avec les paramètres spécifiés.
+		Pageable pageable = PageRequest.of(numPage, appProperties.getMaxPatients(), Sort.by(sort));
 		
-		// On propose explicitement cette réponse.
+		// Produit une page de patients.
+		Page<Patient> patients = patientService.retrievePatients(pageable);
+		
+		// On renvoie explicitement cette réponse au client en cas de page vide.
 		if (patients.isEmpty()) return ResponseEntity.noContent().build();
 		
 		return ResponseEntity.ok(patients);
 	}
 	
-	@GetMapping("/patient/{id}")
+	@GetMapping("/patients/{id}")
 	public ResponseEntity<Patient> getPatient(@PathVariable Long id) {
 		Patient requestedPatient = patientService.retrievePatient(id);
 		
 		return ResponseEntity.ok(requestedPatient);
 	}
 	
-	@PutMapping("/patient/{id}/update")
+	@PutMapping("/patients/{id}/update")
 	public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient detailsPatient) {
 	    Patient updatedPatient = patientService.updatePatient(id, detailsPatient);
 	    
 	    return ResponseEntity.ok(updatedPatient);
 	}
 	
-	@PostMapping("/patient/add")
+	@PostMapping("/patients/add")
 	public ResponseEntity<Patient> addPatient(@Valid @RequestBody Patient newPatient) {
 	    Patient createdPatient = patientService.addPatient(newPatient);
 	    
@@ -62,7 +69,7 @@ public class PatientController {
 	    return ResponseEntity.status(HttpStatus.CREATED).body(createdPatient);
 	}
 	
-	@DeleteMapping("/patient/{id}/delete")
+	@DeleteMapping("/patients/{id}/delete")
 	public ResponseEntity<?> deletePatient(@PathVariable Long id) {
 		patientService.removePatient(id);
 		
