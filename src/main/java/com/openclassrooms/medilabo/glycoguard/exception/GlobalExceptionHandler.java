@@ -18,7 +18,7 @@ import org.springframework.web.context.request.WebRequest;
  * d'exceptions personnalisées (ex: PatientNotFoundException).
  * Une autre alternative aurait été ResponseStatusException au niveau des services, mais avec plus de duplication de code.
  * 
- * @author pihet christopher
+ * @author newenpoi
  *
  */
 @ControllerAdvice

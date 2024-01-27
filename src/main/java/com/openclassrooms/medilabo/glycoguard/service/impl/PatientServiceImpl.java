@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.medilabo.glycoguard.business.Patient;
@@ -20,12 +21,12 @@ public class PatientServiceImpl implements PatientService {
 	private final PatientDao patientDao;
 	
 	@Override
-	public Page<Patient> retrievePatients(Pageable withPage) {
+	public Page<Patient> retrievePatients(@NonNull Pageable withPage) {
 		return patientDao.findAll(withPage);
 	}
 
 	@Override
-	public Patient addPatient(Patient newPatient) {
+	public Patient addPatient(@NonNull Patient newPatient) {
 		return patientDao.save(newPatient);
 	}
 
@@ -33,7 +34,7 @@ public class PatientServiceImpl implements PatientService {
 	 * Renvoie le patient demandé ou une exception personnalisé.
 	 */
 	@Override
-	public Patient retrievePatient(Long id) {
+	public Patient retrievePatient(@NonNull Long id) {
 		// Vérifie la persistance de l'utilisateur spécifié par son identifiant.
 		return patientDao.findById(id).orElseThrow(() -> new PatientNotFoundException(MessageFormat.format("Le patient numéro {0} est introuvable.", id)));
 	}
@@ -44,9 +45,13 @@ public class PatientServiceImpl implements PatientService {
 	 * Les seules propriétés modifiables sont résidence et numéro de téléphone.
 	 */
 	@Override
-	public Patient updatePatient(Long id, Patient updatedPatient) {
+	public Patient updatePatient(@NonNull Long id, Patient updatedPatient) {
 		// Vérifie la persistance de l'utilisateur spécifié par son identifiant.
 		Patient found = patientDao.findById(id).orElseThrow(() -> new PatientNotFoundException(MessageFormat.format("Le patient numéro {0} est introuvable.", id)));
+		
+		// Faire persister l'adresse avant de sauver le patient.
+		// Ou utiliser l'annotation @OneToOne(cascade = CascadeType.PERSIST) sur la résidence.
+		// Address updatedAddress = updatedPatient.getResidence();
 		
 		found.setResidence(updatedPatient.getResidence());
 		found.setPhone(updatedPatient.getPhone());
@@ -55,7 +60,7 @@ public class PatientServiceImpl implements PatientService {
 	}
 
 	@Override
-	public void removePatient(Long id) {
+	public void removePatient(@NonNull Long id) {
 		patientDao.deleteById(id);
 	}
 	
