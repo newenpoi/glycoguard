@@ -30,6 +30,12 @@ public class PatientController {
 	private final ApplicationPropertiesConfiguration appProperties;
 	private final PatientService patientService;
 	
+	/**
+	 * Récupère une page de patients en fonction du numéro de page et du tri.
+	 * @param numPage
+	 * @param sort
+	 * @return
+	 */
 	@Operation(description = "Récupère la liste des patients.")
 	@GetMapping("/patients")
 	public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "page", defaultValue = "0") int numPage, @RequestParam(name = "sort", defaultValue = "name") String sort) {
@@ -45,6 +51,11 @@ public class PatientController {
 		return ResponseEntity.ok(patients);
 	}
 	
+	/**
+	 * Prends en paramètre l'identifiant du patient dont on souhaite récupérer les infos.
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("/patients/{id}")
 	public ResponseEntity<Patient> getPatient(@PathVariable Long id) {
 		Patient requestedPatient = patientService.retrievePatient(id);
@@ -52,6 +63,12 @@ public class PatientController {
 		return ResponseEntity.ok(requestedPatient);
 	}
 	
+	/**
+	 * Mets à jour les détails d'un patient.
+	 * @param id
+	 * @param detailsPatient
+	 * @return
+	 */
 	@PutMapping("/patients/{id}/update")
 	public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient detailsPatient) {
 		Patient updatedPatient = patientService.updatePatient(id, detailsPatient);
@@ -59,6 +76,11 @@ public class PatientController {
 	    return ResponseEntity.ok(updatedPatient);
 	}
 	
+	/**
+	 * Ajoute un nouveau patient en base de données MySQL.
+	 * @param newPatient
+	 * @return
+	 */
 	@PostMapping("/patients/add")
 	public ResponseEntity<Patient> addPatient(@Valid @RequestBody Patient newPatient) {
 	    Patient createdPatient = patientService.addPatient(newPatient);
@@ -69,6 +91,11 @@ public class PatientController {
 	    return ResponseEntity.status(HttpStatus.CREATED).body(createdPatient);
 	}
 	
+	/**
+	 * Supprime un patient de la base de données MySQL.
+	 * @param id
+	 * @return
+	 */
 	@DeleteMapping("/patients/{id}/delete")
 	public ResponseEntity<?> deletePatient(@PathVariable Long id) {
 		patientService.removePatient(id);

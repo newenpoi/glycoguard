@@ -13,5 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApplicationPropertiesConfiguration {
+	// Le nombre maximal de patients affichés par défaut.
 	private int maxPatients;
 }

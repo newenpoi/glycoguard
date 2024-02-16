@@ -24,6 +24,13 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+	/**
+	 * Permet de capturer une exception et de la renvoyer vers le client.
+	 * En l'occurrence lorsque le patient n'existe pas.
+	 * @param ex
+	 * @param request
+	 * @return
+	 */
 	@ExceptionHandler(PatientNotFoundException.class)
 	public ResponseEntity<Object> handlePatientNotFoundException(PatientNotFoundException ex, WebRequest request) {
 		Map<String, Object> body = new LinkedHashMap<>();
@@ -34,6 +41,12 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * Permet de capturer une exception et de la renvoyer vers le client.
+	 * En l'occurrence lorsque la requête est mal formée ou invalide.
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
 		Map<String, Object> errors = new LinkedHashMap<>();

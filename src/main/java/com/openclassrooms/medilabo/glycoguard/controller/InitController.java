@@ -38,6 +38,9 @@ public class InitController implements CommandLineRunner {
 		if (patientDao.count() == 0) addPatients();
 	}
 
+	/**
+	 * Créé quelques adresses en base de données MySQL.
+	 */
 	public void addAddresses() {
 		// Créer des données fictives (des adresses en France selon la classe métier) avec Faker.
 	    for (int i = 0; i < NB_ADDRESS; i++) {
@@ -53,6 +56,9 @@ public class InitController implements CommandLineRunner {
 	    }
 	}
 	
+	/**
+	 * Ajoute des patients test en base de données MySQL.
+	 */
 	public void addPatients() {
 		patientDao.save(new Patient("Test", "TestNone", LocalDate.of(1966, 12, 31), Gender.FEMININE));
 		patientDao.save(new Patient("Test", "TestBorderline", LocalDate.of(1945, 06, 24), Gender.MASCULINE));

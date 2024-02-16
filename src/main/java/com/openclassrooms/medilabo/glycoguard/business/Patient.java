@@ -51,6 +51,13 @@ public class Patient {
 		this.created = LocalDateTime.now();
 	}
 	
+	/**
+	 * Constructeur utilisé dans l'initialisation du jeu de test.
+	 * @param forename
+	 * @param name
+	 * @param dob
+	 * @param gender
+	 */
 	public Patient(String forename, String name, LocalDate dob, Gender gender) {
 		this();
 		

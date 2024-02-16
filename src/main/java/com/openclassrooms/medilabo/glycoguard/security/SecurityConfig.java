@@ -16,11 +16,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
     
+	/**
+	 * L'encodeur pour nos mots de passe.
+	 * @return
+	 */
 	@Bean
     public static PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 	
+	/**
+	 * Depuis 6.1 dans le cadre d'une authentification basique.
+	 * @param http
+	 * @return
+	 * @throws Exception
+	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -31,6 +41,10 @@ public class SecurityConfig {
 		return http.build();
 	}
 	
+	/**
+	 * Creation d'une authentification dit en mémoire avec coordonnées définies.
+	 * @return
+	 */
     @Bean
     public UserDetailsService userDetailsService(){
 
@@ -43,6 +57,10 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(admin);
     }
 	
+    /**
+     * Ignore le filtre sécurité pour les requêtes OpenAPI (documentation).
+     * @return
+     */
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 	    return (web) -> web.ignoring().requestMatchers("/v3/api-docs/**");

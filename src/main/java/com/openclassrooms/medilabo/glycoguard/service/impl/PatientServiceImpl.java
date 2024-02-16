@@ -20,11 +20,18 @@ public class PatientServiceImpl implements PatientService {
 
 	private final PatientDao patientDao;
 	
+	/**
+	 * Récupère une page de patients.
+	 * Les offsets et le tri sont définit dans l'objet withPage.
+	 */
 	@Override
 	public Page<Patient> retrievePatients(@NonNull Pageable withPage) {
 		return patientDao.findAll(withPage);
 	}
 
+	/**
+	 * Ajoute un patient.
+	 */
 	@Override
 	public Patient addPatient(@NonNull Patient newPatient) {
 		return patientDao.save(newPatient);
@@ -59,6 +66,9 @@ public class PatientServiceImpl implements PatientService {
 		return patientDao.save(found);
 	}
 
+	/**
+	 * Supprime un patient.
+	 */
 	@Override
 	public void removePatient(@NonNull Long id) {
 		patientDao.deleteById(id);
