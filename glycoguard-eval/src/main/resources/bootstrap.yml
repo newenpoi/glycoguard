@@ -1,0 +1,7 @@
+spring:
+    application:
+        name: microservice-eval
+    cloud:
+        config:
+            uri: http://glycoguard-configserver:9101
+            

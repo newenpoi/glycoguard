@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Glycoguard</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></head>
+	<link rel="stylesheet" th:href="@{/css/default.css}">
+<body>
+	<div class="wrapper d-flex flex-column justify-content-center">
+		<h1 class="mb-5">Il semblerait que quelque chose ne se soit pas passé comme prévu !</h1>
+		
+		<div class="infos mb-4">
+			<p class="mb-2" th:if="${error != null and !error.isEmpty()}"><span class="badge badge-dark" th:if="${error != null and !error.isEmpty()}"th:text="${error}"></span></p>
+		</div>
+	</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+#
+# Rappel :
+# La commande docker-compose up -d permet de lancer les services qui ne le sont pas encore.
+# La commande docker-compose up -d --build <service-name> permet de rebuild un service et de le lancer.
+# La commande docker-compose up -d --scale <service-name>=<number-of-instances> pour les services conçu pour autoriser plusieurs instances.
+
+version: '3.8'
+services:
+  # Le serveur de configuration (toutes nos config en un repository non inclu dans le docker compose).
+  server-config:
+    container_name: glycoguard-configserver
+    build: ../config-server
+    ports:
+      - "9101:9101"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://glycoguard-configserver:9101/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - sb-configserver
+    environment:
+      - SERVERCONFIG_URI=http://glycoguard-configserver:9101
+  # Le load balancer et découverte.
+  eureka-server:
+    container_name: glycoguard-eureka
+    build: ../eureka-server
+    ports:
+      - "9102:9102"
+    networks:
+      - sb-configserver
+    depends_on:
+      server-config:
+        condition: service_healthy
+  # Le SGBD pour le micro service patients.
+  mysqldb:
+    container_name: mysqldb
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: .Logme1nn
+      MYSQL_DATABASE: glycoguard
+      MYSQL_USER: newenpoi
+      MYSQL_PASSWORD: .Logme1nn
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - sb-mysql
+  # Le micro service patients.
+  patients:
+    container_name: glycoguard-patients
+    build: ../glycoguard-patient
+    ports:
+      - "9111:9111"
+    depends_on:
+      mysqldb:
+        condition: service_started
+      server-config:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - sb-mysql
+      - sb-configserver
+  # Permet d'importer nos notes test dans mongodb.
+  mongoimporter:
+    container_name: mongoimporter
+    image: mongo:latest
+    volumes:
+      - ./notes.json:/src/data/notes.json
+    networks:
+      - sb-mongo
+    command: mongoimport --host mongodb --db glycoguard --collection notes --file /src/data/notes.json --jsonArray
+  # Le SGBD pour le micro service notes.
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - sb-mongo
+    depends_on:
+      - mongoimporter
+    restart: always
+  # Le micro service notes.
+  notes:
+    container_name: glycoguard-notes
+    build: ../glycoguard-notes
+    ports:
+      - "9112:9112"
+    depends_on:
+      mongodb:
+        condition: service_started
+      server-config:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - sb-mongo
+      - sb-configserver
+  # Le micro service evaluator.
+  evaluator:
+    container_name: glycoguard-evaluator
+    build: ../glycoguard-eval
+    ports:
+      - "9113:9113"
+    depends_on:
+      server-config:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - sb-configserver
+  # Le micro service gateway.
+  gateway:
+    container_name: glycoguard-gateway
+    build: ../glycoguard-gateway
+    ports:
+      - "9103:9103"
+    depends_on:
+      server-config:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - sb-configserver
+  # Le micro service client-ui.
+  client-ui:
+    container_name: glycoguard-ui
+    build: ../glycoguard-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      server-config:
+        condition: service_healthy
+    networks:
+      - sb-configserver
+networks:
+  sb-mysql:
+    driver: bridge
+  sb-mongo:
+    driver: bridge
+  sb-configserver:
+    driver: bridge
+volumes:
+  mongodb_data:
+  mysql_data:

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Glycoguard</title>
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Athiti:wght@200&display=swap" rel="stylesheet">
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" th:href="@{/css/default.css}">
+</head>
+<body>
+	<header class="p-4">
+		<h1 class="lh-md">Glycoguard</h1>
+		<small>La prévention avant le coma glycémique !</small>
+	</header>
+	
+	<div class="wrapper d-flex flex-column justify-content-center">
+		<div class="search-container">
+		</div>
+		<ul class="menu list-unstyled">
+			<li th:each="patient : ${patients}" class="d-flex align-items-center mb-3">
+				<a th:href="@{|/patients/${patient.id}|}" class="text-info flex-grow-1" th:text="${patient.name}"></a>
+			</li>
+		</ul>
+	</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

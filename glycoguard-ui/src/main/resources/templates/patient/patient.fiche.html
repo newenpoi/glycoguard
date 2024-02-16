@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Glycoguard</title>
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Athiti:wght@200&display=swap" rel="stylesheet">
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></head>
+	<link rel="stylesheet" th:href="@{/css/default.css}">
+<body>
+	<header class="p-4">
+		<h1 class="lh-md">Glycoguard</h1>
+		<small>La prévention avant le coma glycémique !</small>
+	</header>
+	
+	<div class="wrapper d-flex flex-column justify-content-center">
+		<div class="infos mb-4">
+			<div class="d-flex justify-content-between">
+				<h2 th:text="${patient.name}" class="d-block font-weight-bold"></h2>
+				<p class="font-italic mt-2">Né le <span th:text="${patient.dob}"></span></p>
+			</div>
+			
+			<div class="d-flex justify-content-between">
+				<h2 th:text="${patient.forename}"></h2>
+				<h2 th:text="${evaluation}"></h2>
+			</div>
+		</div>
+		
+		<form th:action="@{/patients/{id}/update(id=${patient.id})}" th:object="${patient}" method="post" class="mb-2">
+			<div class="form-group">
+				<input type="text" th:field="*{phone}" placeHolder="Téléphone" class="form-control">
+			</div>
+			
+			<div class="my-4">
+				<div class="form-group d-flex">
+					<input type="text" th:field="*{residence.number}" placeHolder="N°" class="form-control input-street-nb">
+					
+					<input type="text" th:field="*{residence.street}" placeHolder="Rue" class="form-control flex-grow-1 ml-3">
+				</div>
+				
+				<div class="form-group d-flex">
+					<input type="text" th:field="*{residence.zip}" placeHolder="Code Postal" class="form-control input-street-nb">
+					
+					<input type="text" th:field="*{residence.city}" placeHolder="Ville" class="form-control flex-grow-1 ml-3">
+				</div>
+				
+				<div class="form-group">
+					<input type="text" th:field="*{residence.country}" placeHolder="Pays" class="form-control">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<button type="submit" class="form-control btn btn-primary">METTRE A JOUR LES INFOS</button>
+			</div>
+		</form>
+		
+		<ul class="menu list-unstyled">
+			<li th:each="note : ${notes}" class="d-flex align-items-center mb-3">
+				<p th:text="${note.note}" class="note shadow-light w-100"></p>
+			</li>
+		</ul>
+		
+        <form th:action="@{/notes/add}" th:object="${note}" method="post" class="mb-4">
+            <input type="hidden" th:value="${patient.id}" th:attr="name='patId'" />
+            <input type="hidden" th:value="${patient.name}" th:attr="name='patient'" />
+            
+            <div class="form-group">
+                <label for="note" class="d-flex align-items-center note-add shadow-light mb-3">Vous pouvez ajouter des notes successivement.</label>
+                <textarea th:field="*{note}" id="note" class="form-control" rows="3" placeholder="La note ne peut dépasser 255 caractères..."></textarea>
+            </div>
+            
+            <div class="d-flex">
+            	<button type="submit" class="btn btn-primary flex-grow-1 mr-2">AJOUTER NOTE</button>
+            	<a href="/" class="btn btn-dark text-white flex-grow-1" title="Revenir aux Patients">RETOUR</a>
+            </div>
+        </form>
+	</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
